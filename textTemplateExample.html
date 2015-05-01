@@ -54,8 +54,9 @@
                 }
             };
             var htmlString = "";
+            var myTemplate = templating.location("#contentBoxThreeColumn");
             for (var item in content) {
-                htmlString += templating.applyTemplate(templating.location("#contentBoxThreeColumn"), content[item]);
+                htmlString += templating.applyTemplate(myTemplate, content[item]);
             }
             templating.insertInNode(document.getElementById("contentBoxes"), htmlString );
         }, false);
