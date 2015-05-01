@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>JavaScript Templating - Use of text/template</title>
+    <style>
+        #contentBoxes .threeColumn{ width:300px; height:200px; background:#777; border-radius: 5px 15px; padding:15px; float:left; margin-right:10px;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;}
+    </style>
+    <script>
+        /* Below templating is mini-library that enables basic templating abilities */
+        var templating = function() {
+            "use strict";
+
+            function location(cssSelector) {
+                return document.querySelector(cssSelector);
+            }
+            function applyTemplate(templateNode, dataLiteral) {
+                var templateHTML = templateNode.innerHTML.toString();
+                for (var data in dataLiteral) {
+                    templateHTML = templateHTML.replace(new RegExp("{{" + data + "}}", "g"), dataLiteral[data]);
+                }
+                return templateHTML;
+            }
+            function insertInNode(elementNode, htmlString) {
+                elementNode.innerHTML = htmlString;
+            }
+
+            return {
+                insertInNode: insertInNode,
+                applyTemplate: applyTemplate,
+                location: location
+            };
+
+        }();
+
+        /* Below script uses the above mini-library to apply the templating to the page */
+        window.addEventListener("load", function() {
+            // "content" would normally be a JSON object of items
+            var content = {
+                "item1" : {
+                    "title":"First",
+                    "description":"This is a description"
+                },
+                "item2" : {
+                    "title":"Second",
+                    "description":"More of a description"
+                },
+                "item3" : {
+                    "title":"Third",
+                    "description":"This might be a description"
+                }
+            };
+            var htmlString = "";
+            for (var item in content) {
+                htmlString += templating.applyTemplate(templating.location("#contentBoxThreeColumn"), content[item]);
+            }
+            templating.insertInNode(document.getElementById("contentBoxes"), htmlString );
+        }, false);
+    </script>
+</head>
+<body>
+    <section>
+        <h1>JavaScript Templating</h1>
+        <p>This is an example of the text templates first utilized back in 2008. It involves using a script tag with in ID and a type of "text/template".  The browser does not recognize this type so skips rendering the entire script's content.  However, innerHTML on the script tag will fetch the contents and it will be treated like a string, thus enabling text type methods applied to it.</p>
+        <div id="contentBoxes"></div>
+    </section>
+    <script id="contentBoxThreeColumn" type="text/template">
+        <div class="threeColumn">
+            <h2>{{title}}</h2>
+            <p>{{description}}</p>
+        </div>
+    </script>
+</body>
+</html>
